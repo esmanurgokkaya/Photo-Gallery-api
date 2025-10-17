@@ -1,0 +1,37 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: photo_gallery
+      MYSQL_USER: gallery_user
+      MYSQL_PASSWORD: gallery_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: photo-gallery-app
+    restart: unless-stopped
+    environment:
+      # The app should use these to connect to the database
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: gallery_user
+      DB_PASSWORD: gallery_pass
+      DB_NAME: photo_gallery
+      # Ensure Node listens on 0.0.0.0 if your app binds to localhost by default
+      PORT: "3000"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    volumes:
+      - ./:/usr/src/app
+    working_dir: /usr/src/app
+
+volumes:
+  mysql-data:
