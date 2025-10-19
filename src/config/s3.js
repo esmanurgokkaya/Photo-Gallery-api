@@ -1,4 +1,4 @@
-import { S3Client } from 'a@ws-sdk/clients-s3';
+import { S3Client } from '@aws-sdk/client-s3';
 import env from "../utils/env.js";
 
 const s3 = new S3Client({
