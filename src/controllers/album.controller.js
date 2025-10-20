@@ -1,5 +1,6 @@
 import AlbumService from '../services/album.service.js';
 import { albumSchema, updateAlbumSchema } from '../utils/zod.schemas.js';
+import { ZodError } from 'zod';
 
 class AlbumController {
     async createAlbum(req, res){
@@ -8,8 +9,12 @@ class AlbumController {
             const album = await AlbumService.createAlbum(validatedData);
             res.status(201).json(album);
         } catch (error) {
-            res.status(400).json({ error: error.message });
-        }   
+            if (error instanceof ZodError) {
+                return res.status(400).json({ error: error.message });
+            }
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
     }
     async getAlbumById(req, res){
         try {
@@ -20,7 +25,11 @@ class AlbumController {
             }
             res.status(200).json(album);
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            if (error instanceof ZodError) {
+                return res.status(400).json({ error: error.message });
+            }
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error' });
         }
     }
     async getAllAlbums(req, res){
@@ -28,7 +37,11 @@ class AlbumController {
             const albums = await AlbumService.getAllAlbums();
             res.status(200).json(albums);
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            if (error instanceof ZodError) {
+                return res.status(400).json({ error: error.message });
+            }
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error' });
         }
     }
     async updateAlbumById(req, res){
@@ -41,7 +54,11 @@ class AlbumController {
             }
             res.status(200).json(album);
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            if (error instanceof ZodError) {
+                return res.status(400).json({ error: error.message });
+            }
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error' });
         }
     }
     async deleteAlbumById(req, res){
@@ -53,7 +70,11 @@ class AlbumController {
             }
             res.status(200).json({ message: 'Album deleted successfully' });
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            if (error instanceof ZodError) {
+                return res.status(400).json({ error: error.message });
+            }
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error' });
         }
     }
 

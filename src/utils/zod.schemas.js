@@ -1,10 +1,8 @@
-import zod from 'zod';
+import { z } from 'zod';
 
-const albumSchema = zod.object({
-    title: zod.string().min(2).max(100),
-    description: zod.string().max(500).optional(),
-    createdAt: zod.date().default(() => new Date()),
-    updatedAt: zod.date().default(() => new Date()),
+const albumSchema = z.object({
+    title: z.string().min(2).max(100),
+    description: z.string().max(500).optional(),
 });
 
 const updateAlbumSchema = albumSchema.partial();
