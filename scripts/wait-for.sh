@@ -10,6 +10,7 @@ if [ -z "$HOSTPORT" ]; then
   exit 1
 fi
 
+# Build the command from remaining args
 CMD="$@"
 
 HOST=$(echo "$HOSTPORT" | cut -d: -f1)
@@ -22,4 +23,5 @@ until nc -z "$HOST" "$PORT"; do
 done
 
 echo "MySQL is up - executing command"
-exec $CMD
+# Use exec so PID 1 is replaced by the command
+exec sh -c "$CMD"
