@@ -18,8 +18,29 @@ class AlbumModel {
         const rawLimit = parseInt(options.limit) || 20;
         const MAX_LIMIT = 100;
         const limit = Math.min(MAX_LIMIT, Math.max(1, rawLimit));
-        const filter = options.filter || {};
-        const sort = options.sort || {};
+        
+        // Whitelist allowed filter fields
+        const allowedFilterFields = ['title', 'userId', 'isPublic'];
+        
+        // Whitelist allowed filter fields
+        const filter = {};
+        if (options.filter && typeof options.filter === 'object') {
+            for (const key of Object.keys(options.filter)) {
+                if (allowedFilterFields.includes(key)) {
+                    filter[key] = options.filter[key];
+                }
+            }
+        }
+        // Whitelist allowed sort fields
+        const allowedSortFields = ['title', 'createdAt', 'updatedAt'];
+        const sort = {};
+        if (options.sort && typeof options.sort === 'object') {
+            for (const key of Object.keys(options.sort)) {
+                if (allowedSortFields.includes(key) && ['asc', 'desc'].includes(options.sort[key])) {
+                    sort[key] = options.sort[key];
+                }
+            }
+        }
 
         const offset = (page - 1) * limit;
 

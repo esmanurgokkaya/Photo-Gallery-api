@@ -7,8 +7,8 @@ class AlbumService {
     async getAlbumById(id){
         return await AlbumModel.getAlbumById(id);
     }
-    async getAllAlbums(){
-        return await AlbumModel.getAllAlbums();
+    async getAllAlbums(options){
+      return await AlbumModel.getAllAlbums(options);
     }
     async updateAlbumById(id, data){
         return await AlbumModel.updateAlbumById(id, data);
