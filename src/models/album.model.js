@@ -20,6 +20,9 @@ class AlbumModel {
         const limit = Math.min(MAX_LIMIT, Math.max(1, rawLimit));
         
         // Whitelist allowed filter fields
+        const allowedFilterFields = ['title', 'userId', 'isPublic'];
+        
+        // Whitelist allowed filter fields
         const filter = {};
         if (options.filter && typeof options.filter === 'object') {
             for (const key of Object.keys(options.filter)) {
