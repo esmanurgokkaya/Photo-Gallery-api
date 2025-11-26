@@ -32,4 +32,4 @@ RUN chown -R appuser:appgroup /usr/src/app
 USER appuser
 
 # Default command: wait for DB then start the server
-CMD ["sh", "-c", "./scripts/wait-for.sh $DB_HOST:$DB_PORT -- npm start"]
+CMD ["npm", "start"]
