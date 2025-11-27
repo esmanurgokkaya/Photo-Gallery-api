@@ -22,7 +22,10 @@ class AlbumController {
     }
     async getAlbumById(req, res){
         try {
-            const { id } = req.params;
+            const id = parseInt(req.params.id);
+            if (isNaN(id)) {
+                return res.status(400).json({ error: 'Invalid album ID' });
+            }
             const album = await AlbumService.getAlbumById(id);
             if (!album) {
                 return res.status(404).json({ error: 'Album not found' });
@@ -53,7 +56,11 @@ class AlbumController {
     }
     async updateAlbumById(req, res){
         try {
-            const { id } = req.params;
+            const id = parseInt(req.params.id);
+            if (isNaN(id)) {
+                return res.status(400).json({ error: 'Invalid album ID' });
+            }
+            console.log('Updating album with ID:', id);
             const validatedData = updateAlbumSchema.parse(req.body);
             const album = await AlbumService.updateAlbumById(id, validatedData);
             if (!album) {
@@ -70,7 +77,10 @@ class AlbumController {
     }
     async deleteAlbumById(req, res){
         try {
-            const { id } = req.params;
+            const id = parseInt(req.params.id);
+            if (isNaN(id)) {
+                return res.status(400).json({ error: 'Invalid album ID' });
+            }
             const album = await AlbumService.deleteAlbumById(id);
             if (!album) {
                 return res.status(404).json({ error: 'Album not found' });

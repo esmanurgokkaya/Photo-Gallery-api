@@ -1,6 +1,6 @@
 import Prisma from '../config/prisma.client.js';
 
-const Album = Prisma.Album;
+const Album = Prisma.album;
 
 class AlbumModel {
     async createAlbum(data){
