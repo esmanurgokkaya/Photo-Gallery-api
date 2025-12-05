@@ -10,13 +10,16 @@ class PhotoService {
             Body: file.buffer,
             ContentType: file.mimetype,
         };
-        const s3Result = await s3Model.uploadImage(params);
+        const s3Result = await s3Model.uploadImage(params);        
+        // Controller'a geri döndürülecek URL'yi burada oluştur
+        const photoUrl = `https://${env.bucketName}.s3.${env.bucketRegion}.amazonaws.com/${file.originalname}`;
         
-        return  s3Result ;
+        return { photoUrl, s3Result }; 
+    
 
     }
-    async uploadPhotoToDB(photoData) {
-        return await photoModel.createPhoto(photoData);
+    async uploadPhotoToDB(data) {
+        return await photoModel.createPhoto(data);
     }
 }
 
