@@ -15,11 +15,12 @@ class PhotoController {
             console.log("req.file", req.file);
             console.log("validated body", validateData);
    
-            const { photoUrl, s3Result } = await PhotoService.uploadPhotoToS3(req.file);
+            const { photoUrl, s3Result, metaData } = await PhotoService.uploadPhotoToS3(req.file);
 
 
             const photoData = {
                 photo_url: photoUrl,
+                metadata: metaData,
                 tagIds: validateData.tagIds,
                 albumIds: validateData.albumIds
             };
