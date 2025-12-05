@@ -4,9 +4,28 @@ import Prisma from '../config/prisma.client.js';
 const Photo = Prisma.photo;
 
 class PhotoModel {
-    async createPhoto(photoData) {
-        return await Photo.create({ 
-            data: photoData 
+    async createPhoto(data) {
+const tagsConnect = data.tagIds && data.tagIds.length > 0
+            ? { connect: data.tagIds.map(id => ({ id })) }
+            : undefined;
+
+        const albumsConnect = data.albumIds && data.albumIds.length > 0
+            ? { connect: data.albumIds.map(id => ({ id })) }
+            : undefined;
+
+        const photoData = {
+            photo_url: data.photo_url,
+            ...(tagsConnect && { tags: tagsConnect }), 
+            ...(albumsConnect && { albums: albumsConnect }),
+            // ...  meta verisi
+        };
+
+        return await Prisma.photo.create({ 
+            data: photoData,
+            include: {
+                tags: true,
+                albums: true
+            }
         });
     }
 
