@@ -1,38 +1,52 @@
 import PhotoService from '../services/photo.service.js';
-// import { photoSchema } from '../utils/zod.schemas.js';
+import { photoSchema } from '../utils/zod.schemas.js';
 import { ZodError } from 'zod';
-import env from "../utils/env.js";
+
 
 class PhotoController {
 
     async uploadPhoto (req, res) {
         try {
-            console.log("req.file", req.file);
-            console.log("body", req.body);
-   
-            const result = await PhotoService.uploadPhotoToS3(req.file);
+            if (!req.file) {
+                return res.status(400).json({ error: 'No file uploaded' });
+            }
 
-            const photoUrl = `https://${env.bucketName}.s3.${env.bucketRegion}.amazonaws.com/${req.file.originalname}`;
+            const validateData = photoSchema.parse(req.body);
+            console.log("req.file", req.file);
+            console.log("validated body", validateData);
+   
+            const { photoUrl, s3Result, metaData } = await PhotoService.uploadPhotoToS3(req.file);
+
 
             const photoData = {
                 photo_url: photoUrl,
+                metadata: metaData,
+                tagIds: validateData.tagIds,
+                albumIds: validateData.albumIds
             };
 
             const dbResult = await PhotoService.uploadPhotoToDB(photoData);
-            // Başarılı yanıt
-            res.status(200).json({
-                message: 'File uploaded successfully',
-                photoUrl: photoUrl,
-                s3Result: result,
-                dbResult: dbResult
+            
+            res.status(201).json({
+                message: 'Photo uploaded successfully',
+                photo: dbResult,
+                s3Result: s3Result
             });
             
         } catch (error) {
-            console.error('S3 Upload Error:', error);
+            if (error instanceof ZodError) {
+                return res.status(400).json({ 
+                    error: 'Validation failed', 
+                    details: error.issues.map(issue => ({
+                        path: issue.path.join('.'),
+                        message: issue.message 
+                    })) 
+                });
+            }
+            console.error('Upload Error:', error);
             res.status(500).json({
                 error: 'Upload failed',
-                message: error.message,
-                details: error.name
+                message: error.message
             });
         }
     }
