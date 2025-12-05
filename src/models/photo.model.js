@@ -5,7 +5,7 @@ const Photo = Prisma.photo;
 
 class PhotoModel {
     async createPhoto(data) {
-const tagsConnect = data.tagIds && data.tagIds.length > 0
+        const tagsConnect = data.tagIds && data.tagIds.length > 0
             ? { connect: data.tagIds.map(id => ({ id })) }
             : undefined;
 
@@ -13,11 +13,13 @@ const tagsConnect = data.tagIds && data.tagIds.length > 0
             ? { connect: data.albumIds.map(id => ({ id })) }
             : undefined;
 
+        const metadataCreate = data.metadata ? { create: data.metadata } : undefined;
+
         const photoData = {
             photo_url: data.photo_url,
             ...(tagsConnect && { tags: tagsConnect }), 
             ...(albumsConnect && { albums: albumsConnect }),
-            // ...  meta verisi
+            ...(metadataCreate && { metadata: metadataCreate })
         };
 
         return await Prisma.photo.create({ 
