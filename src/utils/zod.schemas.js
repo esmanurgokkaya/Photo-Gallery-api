@@ -28,7 +28,7 @@ const ReusableArraySchema = z.preprocess(
 ).optional().default([]);
 
 
-export const photoSchemaOptimized = z.object({
+const photoSchema = z.object({
     tagIds: ReusableArraySchema,
     albumIds: ReusableArraySchema
 });
